@@ -3,8 +3,11 @@ package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -24,5 +27,22 @@ public class Room {
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal basePrice;
 
+    @Column(columnDefinition = "TEXT[]")
+    private String[] photos;
 
+    @Column(columnDefinition = "TEXT[]")
+    private String[] amenities;
+
+    @Column(nullable = false)
+    private Integer totalCount;
+
+    @Column(nullable = false)
+    private Integer capacity;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
