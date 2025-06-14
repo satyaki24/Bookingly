@@ -5,6 +5,7 @@ import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.H
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Room;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Exception.ResourceNotFoundException;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Repository.HotelRepository;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ public class HotelServiceImpl implements HotelService{
     private final HotelRepository hotelRepository;
     private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
+    private final RoomRepository roomRepository;
 
     @Override
     public HotelDto createNewHotel(HotelDto hotelDto) {
@@ -59,10 +61,11 @@ public class HotelServiceImpl implements HotelService{
                 .findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Hotel not found with ID: " + id ));
 
-        hotelRepository.deleteById(id);
         for(Room room: hotel.getRooms()){
-            inventoryService.deleteFutureInventories(room);
+            inventoryService.deleteAllInventories(room);
+            roomRepository.deleteById(room.getId());
         }
+        hotelRepository.deleteById(id);
     }
 
     @Override
