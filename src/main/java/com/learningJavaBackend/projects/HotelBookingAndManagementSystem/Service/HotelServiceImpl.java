@@ -1,6 +1,8 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service;
 
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelDto;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDTO;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.RoomDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Hotel;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Room;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Exception.ResourceNotFoundException;
@@ -11,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -81,5 +85,19 @@ public class HotelServiceImpl implements HotelService{
         for(Room room: hotel.getRooms()){
             inventoryService.initializeRoomForAYear(room);
         }
+    }
+
+    @Override
+    public HotelInfoDTO getHotelInfoById(Long hotelId) {
+        Hotel hotel= hotelRepository
+                .findById(hotelId)
+                .orElseThrow(()->new ResourceNotFoundException("Hotel not found with ID: " + hotelId ));
+
+        List<RoomDto> rooms= hotel.getRooms()
+                .stream()
+                .map((element) -> modelMapper.map(element, RoomDto.class))
+                .toList();
+
+        return new HotelInfoDTO(modelMapper.map(hotel, HotelDto.class), rooms);
     }
 }
