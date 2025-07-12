@@ -1,7 +1,7 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service;
 
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelDto;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDTO;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.RoomDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Hotel;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Room;
@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Util.AppUtils.getCurrentUser;
 
 @Service
 @Slf4j
@@ -117,7 +120,7 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
-    public HotelInfoDTO getHotelInfoById(Long hotelId) {
+    public HotelInfoDto getHotelInfoById(Long hotelId) {
         Hotel hotel= hotelRepository
                 .findById(hotelId)
                 .orElseThrow(()->new ResourceNotFoundException("Hotel not found with ID: " + hotelId ));
@@ -127,6 +130,17 @@ public class HotelServiceImpl implements HotelService{
                 .map((element) -> modelMapper.map(element, RoomDto.class))
                 .toList();
 
-        return new HotelInfoDTO(modelMapper.map(hotel, HotelDto.class), rooms);
+        return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class), rooms);
+    }
+
+    @Override
+    public List<HotelDto> getAllHotels() {
+        User user=getCurrentUser();
+        log.info("Getting all hotels for admin user with ID : {}", user.getId());
+        List<Hotel> hotels=hotelRepository.findByOwner(user);
+        return hotels
+                .stream()
+                .map((element) -> modelMapper.map(element, HotelDto.class))
+                .collect(Collectors.toList());
     }
 }

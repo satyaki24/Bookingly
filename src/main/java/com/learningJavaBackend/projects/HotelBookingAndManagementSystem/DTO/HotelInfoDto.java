@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class HotelInfoDTO {
+public class HotelInfoDto {
     private HotelDto hotels;
     private List<RoomDto> rooms;
 

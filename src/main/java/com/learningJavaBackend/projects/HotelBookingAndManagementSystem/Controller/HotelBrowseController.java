@@ -1,7 +1,6 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Controller;
 
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelDto;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDTO;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelPriceDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelSearchRequest;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service.HotelService;
@@ -26,7 +25,7 @@ public class HotelBrowseController {
     }
 
     @GetMapping("/{hotelId}/info")
-    public ResponseEntity<HotelInfoDTO> getHotelInfo(@PathVariable Long hotelId){
+    public ResponseEntity<HotelInfoDto> getHotelInfo(@PathVariable Long hotelId){
         return ResponseEntity.ok(hotelService.getHotelInfoById(hotelId));
     }
 }
