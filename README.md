@@ -1,6 +1,6 @@
-# 🏨 Bookingly - Hotel Booking System
+# 🏨 Bookingly - Hotel Booking and Management System
 
-**Bookingly** is a modern Spring Boot-based RESTful Hotel Booking System built to streamline hotel management and enhance user booking experiences. With features like dynamic pricing, secure JWT authentication, role-based access, and Stripe payment integration, it offers a complete backend solution for a hotel booking platform.
+**Bookingly** is a modern Spring Boot-based RESTful Hotel Booking and Management System built to streamline hotel management and enhance user booking experiences. With features like dynamic pricing, secure JWT authentication, role-based access, and Stripe payment integration, it offers a complete backend solution for a hotel booking and management platform.
 
 ---
 
@@ -12,13 +12,13 @@
 - [User Roles](#-user-roles)
 - [Authentication & Authorization](#-authentication--authorization)
 - [Hotel Browsing & Booking (GUEST)](#-hotel-browsing--booking-guest)
-- [Admin Functionality (HOTEL_MANAGER)](#-admin-functionality-hotel_manager)
+- [Admin Functionality (HOTEL_MANAGER)](#admin-functionality-hotelmanager)
 - [Room & Inventory Management](#-room--inventory-management)
 - [Payment Flow (Stripe)](#-payment-flow-stripe)
 - [Guest Management](#-guest-management)
 - [Dynamic Pricing](#-dynamic-pricing)
-- [Scheduled Tasks](#-scheduled-tasks)
-- [API Endpoints](#-api-endpoints)
+- [Scheduled Tasks](#scheduled-tasks)
+- [API Endpoints](#api-endpoints)
 
 ---
 
@@ -35,7 +35,7 @@ BookingEase enables users to:
 
 ## 🧠 Tech Stack
 
-- **Java 17**
+- **Java 21**
 - **Spring Boot**
 - **Spring Security (JWT-based)**
 - **Stripe API** (for payments)
@@ -81,7 +81,7 @@ BookingEase enables users to:
 - ```POST /auth/signup```        - Register new guest  
 - ```POST /auth/login```         - Login and receive tokens  
 - ```POST /auth/refresh```       - Refresh access token
-## 🧳Hotel Browsing & Booking (GUEST)
+## 🧳 Hotel Browsing & Booking (GUEST)
 
 - ```GET  /hotels/searchAll```                      - Paginated hotel list  
 - ```GET  /hotels/search```                         - Filtered hotel search  
