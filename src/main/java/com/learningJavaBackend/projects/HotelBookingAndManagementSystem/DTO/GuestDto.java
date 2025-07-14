@@ -2,7 +2,6 @@ package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO;
 
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.User;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.enums.Gender;
-import jakarta.persistence.*;
 import lombok.Data;
 
 @Data

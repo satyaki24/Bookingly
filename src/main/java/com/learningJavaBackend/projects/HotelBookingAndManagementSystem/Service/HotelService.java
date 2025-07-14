@@ -2,6 +2,7 @@ package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service
 
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDto;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoRequestDto;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface HotelService {
 
     void activateHotel(Long id);
 
-    HotelInfoDto getHotelInfoById(Long hotelId);
+    HotelInfoDto getHotelInfoById(Long hotelId, HotelInfoRequestDto hotelInfoRequestDto);
 
     List<HotelDto> getAllHotels();
 }

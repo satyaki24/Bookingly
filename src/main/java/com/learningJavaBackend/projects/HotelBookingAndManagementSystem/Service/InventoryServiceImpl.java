@@ -1,7 +1,6 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service;
 
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.*;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Hotel;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Inventory;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Room;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.User;
@@ -68,7 +67,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public Page<HotelPriceDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
+    public Page<HotelPriceResponseDto> searchHotels(HotelSearchRequest hotelSearchRequest) {
         log.info("Searching hotels for {} city from {} to {}",
                 hotelSearchRequest.getCity(), hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate());
 
@@ -82,7 +81,11 @@ public class InventoryServiceImpl implements InventoryService{
                 hotelSearchRequest.getStartDate(), hotelSearchRequest.getEndDate(),
                 hotelSearchRequest.getRoomsCount(), dateCount, pageable);
 
-        return hotelPage;
+        return hotelPage.map(hotelPriceDto -> {
+            HotelPriceResponseDto hotelPriceResponseDto = modelMapper.map(hotelPriceDto.getHotel(), HotelPriceResponseDto.class);
+            hotelPriceResponseDto.setPrice(hotelPriceDto.getPrice());
+            return hotelPriceResponseDto;
+        });
     }
 
     @Override

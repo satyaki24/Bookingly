@@ -2,13 +2,11 @@ package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-public class HotelInfoDto {
-    private HotelDto hotels;
-    private List<RoomPriceResponseDto> rooms;
-
+@NoArgsConstructor
+public class BookingPaymentInitResponseDto {
+    private String sessionUrl;
 }

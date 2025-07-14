@@ -1,10 +1,9 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Controller;
 
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDto;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelPriceDto;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelSearchRequest;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.*;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service.HotelService;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service.InventoryService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +18,16 @@ public class HotelBrowseController {
     private final HotelService hotelService;
 
     @GetMapping("/search")
-    public ResponseEntity<Page<HotelPriceDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest){
-        var page= inventoryService.searchHotels(hotelSearchRequest);
+    @Operation(summary = "Search hotels", tags = {"Browse Hotels"})
+    public ResponseEntity<Page<HotelPriceResponseDto>> searchHotels(@RequestBody HotelSearchRequest hotelSearchRequest) {
+
+        var page = inventoryService.searchHotels(hotelSearchRequest);
         return ResponseEntity.ok(page);
     }
 
     @GetMapping("/{hotelId}/info")
-    public ResponseEntity<HotelInfoDto> getHotelInfo(@PathVariable Long hotelId){
-        return ResponseEntity.ok(hotelService.getHotelInfoById(hotelId));
+    @Operation(summary = "Get a hotel info by hotelId", tags = {"Browse Hotels"})
+    public ResponseEntity<HotelInfoDto> getHotelInfo(@PathVariable Long hotelId, @RequestBody HotelInfoRequestDto hotelInfoRequestDto) {
+        return ResponseEntity.ok(hotelService.getHotelInfoById(hotelId, hotelInfoRequestDto));
     }
 }

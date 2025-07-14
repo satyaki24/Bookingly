@@ -2,7 +2,6 @@ package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service
 
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.BookingDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.BookingRequest;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.GuestDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelReportDto;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.*;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.enums.BookingStatus;
@@ -20,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,7 +96,7 @@ public class BookingServiceImpl implements BookingService{
 
     @Override
     @Transactional
-    public BookingDto addGuests(Long bookingId, List<GuestDto> guestDtoList) {
+    public BookingDto addGuests(Long bookingId, List<Long> guestIdList) {
 
         log.info("Adding guests for booking with id: {}", bookingId);
 
@@ -118,10 +116,9 @@ public class BookingServiceImpl implements BookingService{
             throw new IllegalStateException("Booking is not under reserved state, cannot add guests");
         }
 
-        for (GuestDto guestDto: guestDtoList) {
-            Guest guest = modelMapper.map(guestDto, Guest.class);
-            guest.setUser(user);
-            guest = guestRepository.save(guest);
+        for (Long guestId: guestIdList) {
+            Guest guest = guestRepository.findById(guestId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Guest not found with id: "+guestId));
             booking.getGuests().add(guest);
         }
 
@@ -145,7 +142,8 @@ public class BookingServiceImpl implements BookingService{
         }
 
         String sessionUrl = checkoutService.getCheckoutSession(booking,
-                frontendUrl+"/payments/success", frontendUrl+"/payments/failure");
+                frontendUrl+"/payments/" +bookingId +"/status",
+                frontendUrl+"/payments/" +bookingId +"/status");
 
         booking.setBookingStatus(BookingStatus.PAYMENTS_PENDING);
         bookingRepository.save(booking);
@@ -219,7 +217,7 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public String getBookingStatus(Long bookingId) {
+    public BookingStatus getBookingStatus(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
                 () -> new ResourceNotFoundException("Booking not found with id: "+bookingId)
         );
@@ -228,7 +226,7 @@ public class BookingServiceImpl implements BookingService{
             throw new UnAuthorisedException("Booking does not belong to this user with id: "+user.getId());
         }
 
-        return booking.getBookingStatus().name();
+        return booking.getBookingStatus();
     }
 
     @Override

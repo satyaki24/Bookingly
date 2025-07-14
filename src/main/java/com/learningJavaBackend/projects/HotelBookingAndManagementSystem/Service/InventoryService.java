@@ -11,7 +11,7 @@ public interface InventoryService {
 
     void deleteAllInventories(Room room);
 
-    Page<HotelPriceDto> searchHotels(HotelSearchRequest hotelSearchRequest);
+    Page<HotelPriceResponseDto> searchHotels(HotelSearchRequest hotelSearchRequest);
 
     List<InventoryDto> getAllInventoryByRoom(Long roomId);
 

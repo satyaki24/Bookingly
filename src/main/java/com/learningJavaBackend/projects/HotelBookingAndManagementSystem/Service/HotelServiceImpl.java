@@ -1,14 +1,13 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Service;
 
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelDto;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.HotelInfoDto;
-import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.RoomDto;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.DTO.*;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Hotel;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.Room;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Entity.User;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Exception.ResourceNotFoundException;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Exception.UnAuthorisedException;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Repository.HotelRepository;
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Repository.InventoryRepository;
 import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +31,7 @@ public class HotelServiceImpl implements HotelService{
     private final InventoryService inventoryService;
     private final ModelMapper modelMapper;
     private final RoomRepository roomRepository;
+    private final InventoryRepository inventoryRepository;
 
     @Override
     public HotelDto createNewHotel(HotelDto hotelDto) {
@@ -120,15 +121,25 @@ public class HotelServiceImpl implements HotelService{
     }
 
     @Override
-    public HotelInfoDto getHotelInfoById(Long hotelId) {
-        Hotel hotel= hotelRepository
+    public HotelInfoDto getHotelInfoById(Long hotelId, HotelInfoRequestDto hotelInfoRequestDto) {
+        Hotel hotel = hotelRepository
                 .findById(hotelId)
-                .orElseThrow(()->new ResourceNotFoundException("Hotel not found with ID: " + hotelId ));
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel not found with ID: "+hotelId));
 
-        List<RoomDto> rooms= hotel.getRooms()
-                .stream()
-                .map((element) -> modelMapper.map(element, RoomDto.class))
-                .toList();
+        long daysCount = ChronoUnit.DAYS.between(hotelInfoRequestDto.getStartDate(), hotelInfoRequestDto.getEndDate())+1;
+
+        List<RoomPriceDto> roomPriceDtoList = inventoryRepository.findRoomAveragePrice(hotelId,
+                hotelInfoRequestDto.getStartDate(), hotelInfoRequestDto.getEndDate(),
+                hotelInfoRequestDto.getRoomsCount(), daysCount);
+
+        List<RoomPriceResponseDto> rooms = roomPriceDtoList.stream()
+                .map(roomPriceDto -> {
+                    RoomPriceResponseDto roomPriceResponseDto = modelMapper.map(roomPriceDto.getRoom(),
+                            RoomPriceResponseDto.class);
+                    roomPriceResponseDto.setPrice(roomPriceDto.getPrice());
+                    return roomPriceResponseDto;
+                })
+                .collect(Collectors.toList());
 
         return new HotelInfoDto(modelMapper.map(hotel, HotelDto.class), rooms);
     }
