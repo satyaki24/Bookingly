@@ -12,13 +12,13 @@
 - [User Roles](#-user-roles)
 - [Authentication & Authorization](#-authentication--authorization)
 - [Hotel Browsing & Booking (GUEST)](#-hotel-browsing--booking-guest)
-- [Admin Functionality (HOTEL_MANAGER)](#admin-functionality-hotelmanager)
+- [Admin Functionality (HOTEL_MANAGER)](#-admin-functionality-hotel_manager)
 - [Room & Inventory Management](#-room--inventory-management)
 - [Payment Flow (Stripe)](#-payment-flow-stripe)
 - [Guest Management](#-guest-management)
 - [Dynamic Pricing](#-dynamic-pricing)
-- [Scheduled Tasks](#scheduled-tasks)
-- [API Endpoints](#api-endpoints)
+- [Scheduled Tasks](#-scheduled-tasks)
+- [API Endpoints](#-api-endpoints)
 
 ---
 
@@ -30,6 +30,7 @@ BookingEase enables users to:
 - 🧾 Manage bookings and guest details
 - 💳 Make secure payments via **Stripe**
 - 📈 Experience dynamic pricing based on real-time strategies
+- 🔐 Login with Google OAuth2 or traditional JWT
 
 ---
 
@@ -37,7 +38,7 @@ BookingEase enables users to:
 
 - **Java 21**
 - **Spring Boot**
-- **Spring Security (JWT-based)**
+- **Spring Security (JWT + OAuth2)**
 - **Stripe API** (for payments)
 - **PostgreSQL** (database)
 - **Lombok**
@@ -75,12 +76,15 @@ BookingEase enables users to:
 ## 🔐 Authentication & Authorization
 
 - JWT-based access token with refresh token
+- Google OAuth2 login support for easy user access
 - Secure cookie storage for refresh tokens
 
 **Endpoints:**
 - ```POST /auth/signup```        - Register new guest  
 - ```POST /auth/login```         - Login and receive tokens  
 - ```POST /auth/refresh```       - Refresh access token
+- ```GET /oauth2/authorize/google``` – Redirect to Google for login
+- ```GET /oauth2/callback``` – Callback handler for Google login
 ## 🧳 Hotel Browsing & Booking (GUEST)
 
 - ```GET  /hotels/searchAll```                      - Paginated hotel list  
