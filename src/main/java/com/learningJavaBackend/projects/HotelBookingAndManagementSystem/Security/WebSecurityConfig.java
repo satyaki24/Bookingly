@@ -1,5 +1,6 @@
 package com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Security;
 
+import com.learningJavaBackend.projects.HotelBookingAndManagementSystem.Handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 public class WebSecurityConfig {
 
     private final JWTAuthFilter jwtAuthFilter;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Autowired
     @Qualifier("handlerExceptionResolver")
@@ -40,6 +42,10 @@ public class WebSecurityConfig {
                         .requestMatchers("/bookings/**").authenticated()
                         .requestMatchers("/users/**").authenticated()
                         .anyRequest().permitAll()
+                )
+                .oauth2Login(oauth2Config -> oauth2Config
+                        .failureUrl("/login?error=true")
+                        .successHandler(oAuth2SuccessHandler)
                 )
                 .exceptionHandling(exHandlingConfig -> exHandlingConfig.accessDeniedHandler(accessDeniedHandler()));
 
